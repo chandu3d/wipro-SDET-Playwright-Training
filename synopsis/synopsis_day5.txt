@@ -1,0 +1,38 @@
+      Synopsis Day_5
+
+
+1. OBJECT-ORIENTED PROGRAMMING (OOP)
+   Concept: Organizing code into reusable classes and objects.
+   - Encapsulation: Using '#' for private variables (e.g., #balance) to protect data.
+   - Inheritance: Using 'extends' and 'super()' to share logic between classes.
+   - Polymorphism: Overriding parent methods in child classes (e.g., draw() in Square).
+   - Abstraction: Hiding complex internal details behind simple methods (e.g., brew()).
+
+2. ADVANCED JS CONCEPTS
+   - Getters/Setters: Controlling how data is accessed and validated.
+   - Static Methods: Methods called directly on the Class, not the instance.
+   - Method Chaining: Returning 'this' from methods to allow '.add().multiply()'.
+   - Object.freeze(): Making an object completely read-only.
+   - Destructuring: Cleanly extracting properties: const { name, age } = user.
+
+3. REFACTORING TO ASYNC/AWAIT
+   Concept: Making asynchronous code look and behave like synchronous code.
+   - try/catch: Modern way to handle errors in async functions.
+   - await: Pauses execution until the promise is resolved.
+   Example:
+   async function fetchData() {
+       try {
+           const res = await fetch(url);
+           const data = await res.json();
+           console.log(data);
+       } catch (err) {
+           console.error(err);
+       }
+   }
+
+
+- Use '#' for truly private class properties (Encapsulation).
+- async/await is much cleaner and easier to debug than .then() chains.
+- Destructuring simplifies working with complex API response objects.
+- Method chaining (returning 'this') creates very readable utility classes.
+- Object.freeze() is useful for configuration objects that shouldn't change.
