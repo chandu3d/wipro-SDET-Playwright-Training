@@ -1,4 +1,4 @@
-unction getData() {
+function getData() {
 
    return new Promise((resolve, reject) => {
 
