@@ -1,183 +1,199 @@
-//The Generic API Wrapper
-// async function fetchData<T>(url: string): Promise<T> {
-//     const response = await fetch(url);
-//     if(!response.ok) {
-//         throw new Error('Network request Failed: ' + response.statusText)
-//     }
-//     const data: T = await response.json();
-//     return data;
-// }
+// 1. The Generic API Wrapper
 
-// interface Album {
-//     userId: number,
-//     id: number,
-//     title: string
-// }
+async function fetchData<T>(url:string):Promise<T>{
+const response=await fetch(url);
+if(!response.ok){
+    console.log(` error is : ${response.statusText}`);
+}
+const data=await response.json();
+return data;
 
-// async function demo() {
-//     const url = "https://jsonplaceholder.typicode.com/albums/1";
-//     const album = await fetchData<Album>(url);
+}
 
-//     console.log(`Album ID: ${album.id}`)
-//     console.log(`Album Title: ${album.title}`)
-// }
+interface Album{
+    userId:number,
+    id:number,
+    title:string,
+}
+async function demo(){
+const url="https://jsonplaceholder.typicode.com/albums/1";
+const album= await fetchData<Album>(url);
+console.log(`Album ID :${album.id}`);
+}
 
-// demo();
-
+demo();
 
 
-// interface Album {
-//   userId: number;
-//   id: number;
-//   title: string;
-// }
-
-// function fetchData<T>(url: string): Promise<T> {
-//   return fetch(url)
-//     .then((response) => {
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
-
-//       return response.json();
-//     })
-//     .then((data) => data as T);
-// }
-
-// // Test the function
-// fetchData<Album>("https://jsonplaceholder.typicode.com/albums/1")
-//   .then((album) => {
-//     console.log(album.title);
-//     console.log(album.id);
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
+// 2. Record Mapping for Configuration
 
 
-//Record Mapping for Configuration
-// enum Role {
-//   Admin,
-//   Editor,
-//   Guest,
-// }
+enum Role{
+      Admin, 
+      Editor,
+     Guest 
+}
 
-// const permissionMap:Record<Role, boolean> = {
-//   [Role.Admin]: true,
-//   [Role.Editor]: true,
-//   [Role.Guest]: true,
-// };
-// console.log( permissionMap);
+const PermissionMap :Record<Role,boolean> ={
+[Role.Admin]:true,
+[Role.Editor]:true,
+[Role.Guest]:false
+}
 
+function hasPermissionMap(role:Role):boolean{
+    return PermissionMap[role];
 
-//Exhaustiveness Checking (The never Type)
-
-// type TaskStatus = "Open" | "InProgress" | "Closed" | "Archived";
-
-// function handleTask(status: TaskStatus) {
-//   switch (status) {
-//     case "Open":
-//       console.log("Task is open");
-//       break;
-
-//     case "InProgress":
-//       console.log("Task is in progress");
-//       break;
-
-//     case "Closed":
-//       console.log("Task is closed");
-//       break;
-
-//     case "Archived":
-//       console.log("Task is closed");
-//       break;
+}
+console.log(hasPermissionMap(Role.Admin));
+console.log(hasPermissionMap(Role.Editor));
+console.log(hasPermissionMap(Role.Guest));
 
 
+// 3. Exhaustiveness Checking (The never Type)
+
+type TaskStatus = 'Open' | 'InProgress' | 'Closed'|'Archived';
+
+function handleTask(status: TaskStatus){
+    switch(status){
+
+        case "Open":
+            console.log("Open");
+            break;
+        case "InProgress":
+            console.log("InProgress");
+            break;
+        case "Closed":
+            console.log("Closed");
+            break;
+
+        case "Archived":
+            console.log("Archived");
+            break;
+
+            default:
+                const exhaustiveCheck: never = status;
+                return exhaustiveCheck;
+    }
+}
+
+handleTask('Open');
+handleTask('InProgress');
+handleTask('Closed');
+handleTask('Archived');
 
 
-//     default:
-//       const neverValue: never = status;
-//       console.log(neverValue);
-//   }
-// }
-// handleTask("Open");
-// handleTask("InProgress");
-// handleTask("Closed");
-// handleTask("Archived");
-//
+// 4 Recursive Navigation Type
+type FolderNode = {
+  name: string;
+  files?: string[];
+  subFolders?: FolderNode[];
+};
+
+const myFolder: FolderNode = {
+  name: "Root",
+  files: ["readme.txt"],
+  subFolders: [
+    {
+      name: "Documents",
+      files: ["doc1.pdf"]
+    },
+    {
+      name: "Images",
+      subFolders: [
+        {
+          name: "Vacations",
+          files: ["goa.png"]
+        }
+      ]
+    }
+  ]
+};
+
+// console.log(myFolder);
+console.log(JSON.stringify(myFolder, null, 2));
+
+// 5. Template Literal Types for CSS
+
+type MarginValue=`${number}px`|`${number}rem`|`${number}vh`;
+
+function setUnitTypes(value:MarginValue){
+    console.log("Margin set to : ",value);
+
+}
+
+setUnitTypes("10px");
+setUnitTypes("10vh");
+setUnitTypes("10rem");
+setUnitTypes("10");
+setUnitTypes("abcd");
+setUnitTypes("px");
+
+// 7. The Union Manipulation Puzzle
+
+type AllEvents = 'click' | 'dbclick' | 'submit' | 'reset' | 'keypress';
+
+type MouseEvents=Extract<AllEvents,'click' | 'dbclick'>;
+type NonFormEvents=Exclude<AllEvents,'submit' | 'reset'>;
+
+let ev1:MouseEvents;
+ev1="click";
+ev1="dbclick";
+// ev1="reset";
+// ev1="keypress";
 
 
-//Recursive Navigation Type
-// type FolderNode = {
-//   name: string;
-//   files?: string[];
-//   subFolders?: FolderNode[];
-// };
+let ev2:NonFormEvents;
+ev2="click";
+ev2="dbclick";
+ev2="keypress";
+ev2="submit";
+ev2="reset";
 
-// const folder: FolderNode = {
-//   name: "Day 10",
-//   files: ["omit.ts", "partial.ts"],
-//   subFolders: [
-//     {
-//       name: "Images",
-//       files: ["logo.png"],
-//     },
-//     {
-//       name: "Docs",
-//       files: ["readme.md"],
-//     },
-//   ],
-// };
+console.log("Mouse Event:", ev1);
+console.log("Non Form Event:", ev2);
 
-// console.log(folder);
+// 8. Async Higher-Order Function (HOF)
 
 
-//Template Literal Types for CSS
+// 9. Index Signatures for Dynamic Metadata
 
-// type MarginValue = `${number}px` | `${number}rem` | `${number}vh`;
+interface UserMetadata {
+  createdAt: Date;
+  [key: string]: string | number | boolean | Date;
+}
 
-// let margin1: MarginValue = "10px";
-// let margin2: MarginValue = "2rem";
-// let margin3: MarginValue = "50vh";
+const user1: UserMetadata = {
+  createdAt: new Date(),
+  role: "admin",
+  loginCount: 5,
+  isActive: true
+};
 
+const user2: UserMetadata = {
+  createdAt: new Date(),
+  username: "khushi",
+  isAdmin: true,
+  score: 95,
+//   hobbies: ["coding", "badminton"] 
+};
 
+console.log(user1);
+console.log(user2);
 
-// console.log(margin1);
-// console.log(margin3);
+// 10. Mapped Types with Key Remapping
 
+interface Car {
+  make: string;
+  model: string;
+}
 
-
-//Conditional Types & the infer Keyword
-// type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
-
-
-// function printValue<T>(value: T): UnwrapPromise<T> {
-//   return value as UnwrapPromise<T>;
-// }
-
-
-// const text: UnwrapPromise<Promise<string>> = "Hello";
-// console.log(text);
-
-
-// const num: UnwrapPromise<Promise<number>> = 100;
-// console.log(num);
-
-
-// const bool: UnwrapPromise<boolean> = true;
-// console.log(bool);
-
-
-//The Union Manipulation Puzzle
-type AllEvents = "click" | "dbclick" | "submit" | "reset" | "keypress";
-
-type MouseEvents = Extract<AllEvents, "click" | "dbclick">;
-
-type NonFormEvents = Exclude<AllEvents, "submit" | "reset">;
+type ApiResponse<T> = {
+  [K in keyof T as `DATA_${Uppercase<string & K>}`]: T[K];
+};
 
 
-let a: MouseEvents = "click";
-console.log(a);
+const carData: ApiResponse<Car> = {
+  DATA_MAKE: "Toyota",
+  DATA_MODEL: "Fortuner",
+};
 
-let b: NonFormEvents = "keypress";
-console.log(b);
+console.log(carData);
