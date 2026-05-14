@@ -1,0 +1,21 @@
+****PlayWright*******
+
+ Playwright is an open-source automation testing framework,  and Supports Chromium, Firefox, and WebKit browsers.
+ IT Perform end to end testing.
+
+ * Selenium uses WebDriver for browser communication, while Playwright communicates directly with browsers, making execution faster and more reliable.
+
+ **Core Ecocepts
+          page.goto()      → Opens website URL
+          locator()        → Finds element using locator
+          getByRole()      → Finds element using ARIA role
+          click()          → Clicks element
+          fill()           → Enters text into input field
+          expect()         → Validates expected result
+
+Playwright Assertion example ---
+      expect(page.url()).toBe("https://example.com");
+
+Commonly Used Playwright Cmds
+      npm init playwright@latest
+      npx playwright test (filename)      
